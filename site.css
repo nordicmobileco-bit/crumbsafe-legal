@@ -1,0 +1,607 @@
+/* Crumbsafe legal site. One typeface, the app's navy and blues, no external requests. */
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  src: url("fonts/atkinson-next-latin.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  src: url("fonts/atkinson-next-latin-italic.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  --ground: #f4f7f9;
+  --field: #e3ecf2;
+  --field-strong: #d3e1ea;
+  --ink: #0b2536;
+  --ink-soft: #34505f;
+  --accent: #1e6091;
+  --accent-ink: #ffffff;
+  --navy: #0d344d;
+  --navy-ink: #e8f1f7;
+  --navy-soft: #a9c6d8;
+  --bar: #0d344d;
+
+  --margin: clamp(20px, 4vw, 56px);
+  /* Width of the contents column plus the text column; header, pages and footer share it. */
+  --page: 1056px;
+  --frame: max(var(--margin), (100% - var(--page)) / 2);
+  --measure: 66ch;
+  --text: 1.125rem;
+  --small: 0.9375rem;
+  --h2: 1.5rem;
+  --h1: clamp(2.75rem, 7vw, 5.5rem);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #0b2536;
+    --field: #10324a;
+    --field-strong: #16405c;
+    --ink: #e8f1f7;
+    --ink-soft: #b4cad8;
+    --accent: #79b8e0;
+    --accent-ink: #071c2a;
+    --navy: #071c2a;
+    --navy-ink: #e8f1f7;
+    --navy-soft: #9fbfd3;
+    --bar: #79b8e0;
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 24px;
+  scrollbar-color: var(--accent) var(--field);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "Atkinson Hyperlegible Next", system-ui, sans-serif;
+  font-size: var(--text);
+  line-height: 1.6;
+  font-kerning: normal;
+  font-variant-numeric: tabular-nums;
+  caret-color: var(--accent);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+h1,
+h2,
+p,
+ul,
+ol {
+  margin: 0;
+}
+
+h1,
+h2 {
+  text-wrap: balance;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+  transition: color 160ms var(--ease-out), text-decoration-color 160ms var(--ease-out);
+}
+
+a:hover {
+  text-decoration-color: transparent;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.skip {
+  position: absolute;
+  left: var(--margin);
+  top: -100px;
+  padding: 10px 16px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+  z-index: 10;
+}
+
+.skip:focus {
+  top: 12px;
+}
+
+/* The shield from the app icon, tinted with the page's accent. */
+.shield,
+.home-shield {
+  display: inline-block;
+  background: var(--accent);
+  -webkit-mask: url("shield.png") center / contain no-repeat;
+  mask: url("shield.png") center / contain no-repeat;
+}
+
+/* Header */
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 32px;
+  padding: 22px var(--frame);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.brand .shield {
+  width: 21px;
+  height: 27px;
+}
+
+.bar nav {
+  margin-right: auto;
+}
+
+.bar ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  padding: 0;
+  list-style: none;
+}
+
+.bar nav a,
+.lang {
+  color: var(--ink-soft);
+  font-size: var(--small);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.bar nav a:hover,
+.lang:hover {
+  color: var(--accent);
+}
+
+.bar nav a[aria-current="page"] {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.45em;
+}
+
+.lang {
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--field);
+  color: var(--ink);
+  transition: background-color 160ms var(--ease-out), color 160ms var(--ease-out);
+}
+
+.lang:hover {
+  background: var(--field-strong);
+}
+
+/* Document pages */
+
+/* Contents and text are centred as one block, so both outer margins match. */
+.doc {
+  display: grid;
+  grid-template-columns: minmax(180px, 260px) minmax(0, 700px);
+  justify-content: space-between;
+  gap: 0 clamp(32px, 6vw, 96px);
+  padding: clamp(40px, 7vw, 104px) var(--frame) clamp(96px, 12vw, 176px);
+}
+
+.doc-head {
+  grid-column: 1 / -1;
+  margin-bottom: clamp(48px, 7vw, 96px);
+}
+
+.doc h1,
+.home h1 {
+  font-size: var(--h1);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  max-width: 14ch;
+}
+
+.doc-lede {
+  margin-top: 24px;
+  max-width: 40ch;
+  font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+  line-height: 1.4;
+}
+
+.updated {
+  margin-top: 16px;
+  color: var(--ink-soft);
+  font-size: var(--small);
+}
+
+.toc {
+  align-self: start;
+  position: sticky;
+  top: 24px;
+}
+
+.toc h2 {
+  font-size: var(--small);
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.toc ol {
+  padding: 0;
+  list-style: none;
+}
+
+.toc li + li {
+  margin-top: 8px;
+}
+
+.toc a {
+  display: inline-block;
+  color: var(--ink-soft);
+  font-size: var(--small);
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+.toc a:hover {
+  color: var(--accent);
+}
+
+.toc-back {
+  margin-top: 28px;
+  font-size: var(--small);
+}
+
+.prose {
+  min-width: 0;
+}
+
+.prose section + section,
+.prose .intro + section {
+  margin-top: clamp(48px, 6vw, 72px);
+}
+
+.prose h2 {
+  font-size: var(--h2);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin-bottom: 16px;
+}
+
+.prose p + p,
+.prose p + ul,
+.prose ul + p {
+  margin-top: 14px;
+}
+
+.prose ul {
+  padding-left: 1.2em;
+}
+
+.prose li + li {
+  margin-top: 6px;
+}
+
+.prose li::marker {
+  color: var(--accent);
+}
+
+.prose strong {
+  font-weight: 750;
+}
+
+/* The privacy summary, set like the ingredient box on a food package:
+   a heavy bar on top, everything declared underneath. */
+
+.declaration {
+  padding: 0 clamp(20px, 3vw, 36px) clamp(24px, 3vw, 32px);
+  background: var(--field);
+  border-top: 12px solid var(--bar);
+}
+
+.declaration h2 {
+  padding: 20px 0 14px;
+  margin-bottom: 0;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  border-bottom: 6px solid var(--bar);
+}
+
+.declaration ul {
+  padding: 0;
+  list-style: none;
+}
+
+.declaration li {
+  padding: 12px 0;
+  font-weight: 600;
+}
+
+.declaration li + li {
+  margin-top: 0;
+  border-top: 3px solid var(--field-strong);
+}
+
+.declaration p {
+  padding-top: 14px;
+}
+
+/* Home */
+
+.home {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(56px, 8vw, 128px) clamp(32px, 6vw, 96px);
+  padding: clamp(40px, 7vw, 104px) var(--frame) clamp(96px, 12vw, 176px);
+}
+
+.home-head {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+}
+
+.home-shield {
+  grid-row: span 2;
+  width: clamp(72px, 10vw, 148px);
+  aspect-ratio: 147 / 192;
+}
+
+.lede {
+  grid-column: 2;
+  margin-top: 28px;
+  max-width: 36ch;
+  font-size: clamp(1.25rem, 2.2vw, 1.625rem);
+  line-height: 1.4;
+}
+
+.home h2 {
+  font-size: var(--h2);
+  font-weight: 750;
+  letter-spacing: -0.015em;
+  margin-bottom: 20px;
+}
+
+.home-docs {
+  grid-column: 1 / -1;
+}
+
+.doc-list {
+  padding: 0;
+  list-style: none;
+}
+
+.doc-list a {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr) 13.5rem;
+  gap: 4px clamp(20px, 3vw, 48px);
+  align-items: baseline;
+  padding: clamp(20px, 2.6vw, 32px) clamp(16px, 2vw, 28px);
+  background: var(--field);
+  color: var(--ink);
+  text-decoration: none;
+  transition: background-color 200ms var(--ease-out);
+}
+
+.doc-list li + li {
+  margin-top: 4px;
+}
+
+.doc-list a:hover {
+  background: var(--field-strong);
+}
+
+.doc-list a:active .doc-name {
+  transform: translateX(4px);
+}
+
+.doc-name {
+  font-size: clamp(1.625rem, 3.2vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  transition: transform 200ms var(--ease-out), color 200ms var(--ease-out);
+}
+
+.doc-list a:hover .doc-name {
+  color: var(--accent);
+  transform: translateX(4px);
+}
+
+.doc-sum {
+  color: var(--ink);
+}
+
+.doc-date {
+  color: var(--ink-soft);
+  font-size: var(--small);
+  white-space: nowrap;
+}
+
+.home-contact {
+  grid-column: 2;
+}
+
+/* Footer: the name returns at full width on the navy of the app icon. */
+
+.foot {
+  padding: clamp(48px, 7vw, 96px) var(--frame) clamp(32px, 4vw, 48px);
+  background: var(--navy);
+  color: var(--navy-ink);
+}
+
+.foot-name {
+  font-size: clamp(4rem, 13vw, 12rem);
+  font-weight: 800;
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+}
+
+.foot-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 40px;
+  margin-top: clamp(32px, 4vw, 56px);
+  color: var(--navy-soft);
+  font-size: var(--small);
+}
+
+.foot a {
+  color: var(--navy-soft);
+}
+
+.foot a:hover {
+  color: var(--navy-ink);
+}
+
+/* Tablet and phone */
+
+@media (max-width: 860px) {
+  .doc {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toc {
+    position: static;
+    margin-bottom: 56px;
+    padding: 20px 22px;
+    background: var(--field);
+  }
+
+  .toc ol {
+    columns: 2;
+    column-gap: 24px;
+  }
+
+  .toc li {
+    break-inside: avoid;
+  }
+
+  .home {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-contact {
+    grid-column: 1;
+  }
+
+  .doc-list a {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .bar {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .foot-name {
+    font-size: 4.25rem;
+  }
+
+  .bar nav {
+    order: 3;
+    width: 100%;
+  }
+
+  .lang {
+    margin-left: auto;
+  }
+
+  .toc ol {
+    columns: 1;
+  }
+
+  .home-head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-shield {
+    grid-row: auto;
+    margin-bottom: 24px;
+    width: 64px;
+  }
+
+  .lede {
+    grid-column: 1;
+  }
+}
+
+@media print {
+  .bar,
+  .toc,
+  .skip,
+  .foot-notes a {
+    display: none;
+  }
+
+  .doc {
+    display: block;
+    padding: 0;
+  }
+
+  .foot {
+    background: none;
+    color: inherit;
+    padding: 24px 0 0;
+  }
+
+  .foot-name {
+    font-size: 2rem;
+  }
+}
